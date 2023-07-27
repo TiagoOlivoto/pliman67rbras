@@ -56,8 +56,7 @@ crop <- image_autocrop(leaves, plot = TRUE)
 # crop <- image_crop(leaves, viewer = "mapview")
 
 crop <- image_crop(leaves,
-                   width = 137:912, 
-                   height = 59:739)
+                   plot = TRUE)
 ```
 
 
@@ -85,13 +84,15 @@ binary <-
                fill_hull = TRUE)
 
 # Segmentação
-seg <- image_segment(leaves,
-                     # threshold = 0.1,
-                     # threshold = "aa",
-                     index = "B-R")
+seg <- 
+  image_segment(leaves,
+                # threshold = 0.1,
+                # threshold = "aa",
+                index = "B-R")
 
 # Threshold adaptativo
-adaptive <- image_import("adaptive.jpg")
+adaptive <- image_import("adaptive.jpg", plot = TRUE)
+
 # Ìndice de imagem
 ind <- image_index(adaptive, index = "R")
 plot(ind, type = "density")
@@ -416,5 +417,6 @@ plot(sev5$shapefiles)
 plot_measures(sev5, "symptomatic")
 
 ```
+
 
 
