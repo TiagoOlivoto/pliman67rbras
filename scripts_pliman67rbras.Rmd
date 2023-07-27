@@ -89,6 +89,22 @@ seg <- image_segment(leaves,
                      # threshold = 0.1,
                      # threshold = "aa",
                      index = "B-R")
+
+# Threshold adaptativo
+adaptive <- image_import("adaptive.jpg")
+# Ìndice de imagem
+ind <- image_index(adaptive, index = "R")
+plot(ind, type = "density")
+
+# Segmentação por Otsu
+image_segment(adaptive, index = "R")
+
+# Segmentação utilizando threshold adaptativo
+image_segment(adaptive,
+              index = "R",
+              # filter = 5,
+              # fill_hull = TRUE,
+              threshold = "adaptive")
 ```
 
 
@@ -160,6 +176,8 @@ res <-
                   dir_original = "flax_af",
                   reference = TRUE,
                   reference_area = 20,
+                  back_fore_index = "R/(G/B)",
+                  fore_ref_index = "B-R",
                   watershed = FALSE,
                   filter = 2,
                   plot = FALSE,
@@ -245,6 +263,8 @@ plot_index_shp(res)
 results <- get_measures(res)
 ```
 
+
+
 ## Índices de vegetação
 
 ```{r}
@@ -258,6 +278,7 @@ plot_index(object = res, index = "DGCI")
 # resumir as informações
 results <- get_measures(res)
 ```
+
 
 ## Stand de plantas
 
@@ -293,6 +314,7 @@ par(mfrow = c(1, 1))
 ```
 
 
+
 # Fitopatometria
 ## Iterativa
 ```{r}
@@ -317,6 +339,7 @@ sev <-
 sev$severity
 
 ```
+
 
 ## Usando índices de imagem
 ```{r}
@@ -356,8 +379,21 @@ sev4 <-
                   threshold = c("Otsu", 0),
                   parallel = TRUE)
 
-plot(sev3$severity$symptomatic, sev4$severity$symptomatic)
 
+# paletas vs índices de imagem
+
+df <- 
+  data.frame(paletas = sev3$severity$symptomatic,
+             índices = sev4$severity$symptomatic)
+df
+
+ggplot(df, aes(paletas, índices)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "red") +
+  theme_bw(base_size = 16) +
+  xlim(0, 100) +
+  ylim(0, 100) +
+  coord_equal()
 
 ```
 
@@ -365,6 +401,7 @@ plot(sev3$severity$symptomatic, sev4$severity$symptomatic)
 
 ```{r}
 folha_grid <- image_import("disease_shp.jpg", plot = TRUE)
+
 sev5 <- 
   measure_disease_shp(folha_grid,
                       index_lb = "HUE2",
